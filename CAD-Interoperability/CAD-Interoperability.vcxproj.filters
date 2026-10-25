@@ -30,6 +30,9 @@
     <ClCompile Include="GeometryScene.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="ModelLoader.cpp">
+      <Filter>Import</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Circle.h">
@@ -46,6 +49,9 @@
     </ClInclude>
     <ClInclude Include="Point2D.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelLoader.h">
+      <Filter>Import</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
