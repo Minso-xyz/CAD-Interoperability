@@ -13,10 +13,39 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{34d63996-8243-44e2-8af6-7627c85404df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model">
+      <UniqueIdentifier>{8b6f2691-2fd0-49d1-a465-898a0f95c595}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Import">
+      <UniqueIdentifier>{fc9ab4fd-b928-462a-b8d5-3772ce345124}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeometryScene.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Circle.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryScene.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Line.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Point2D.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
