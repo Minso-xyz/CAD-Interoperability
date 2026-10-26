@@ -137,8 +137,16 @@ void NXExtractor::print(const char* msg)
 //------------------------------------------------------------------------------
 void NXExtractor::do_it()
 {
-  
-	// TODO: add your code here
+	print("=== NX Extractor ===");
+
+	if (workPart == nullptr)
+	{
+		print("No work part is open!");
+		return;
+	}
+
+	print("Work part found.");
+	NXOpen::NXString name = workPart->Name();
 }
 
  
@@ -176,7 +184,8 @@ extern "C" DllExport void ufusr(char* parm, int* returnCode, int rlen)
 extern "C" DllExport int ufusr_ask_unload()
 {
   // Unloads the image when NX session terminates
-	return (int)Session::LibraryUnloadOptionAtTermination;
+	//return (int)Session::LibraryUnloadOptionAtTermination;   // unload the dll when NX is closed
+	return (int)Session::LibraryUnloadOptionImmediately;   // unload the dll immediately
   
 }
 
