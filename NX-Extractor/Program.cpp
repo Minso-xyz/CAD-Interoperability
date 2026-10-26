@@ -139,14 +139,39 @@ void NXExtractor::do_it()
 {
 	print("=== NX Extractor ===");
 
+	// Print the name of work part
 	if (workPart == nullptr)
 	{
 		print("No work part is open!");
 		return;
 	}
 
-	print("Work part found.");
-	NXOpen::NXString name = workPart->Name();
+	NXOpen::NXString nameWorkPart = workPart->Name();
+	print("Work part found : " + nameWorkPart);
+
+
+	// Print the display name of assembly
+	Part* part = theSession->Parts()->Work();
+
+	Assemblies::ComponentAssembly* componentAssembly = part->ComponentAssembly();
+	Assemblies::Component* root = componentAssembly->RootComponent();
+
+	if (root == nullptr)
+	{
+		print("Work part is not an assembly!");
+		return;
+	}
+
+	NXOpen::NXString nameRoot = root->DisplayName();
+	print("Assembly root found : " + nameRoot);
+
+	// Root extraction
+	print("=== List of children ===");
+	std::vector<Assemblies::Component*> rootChildren = root->GetChildren();
+	for (auto child : rootChildren)
+	{
+		print("L " + child->DisplayName());
+	}
 }
 
  
