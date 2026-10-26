@@ -33,6 +33,9 @@
     <ClCompile Include="ModelLoader.cpp">
       <Filter>Import</Filter>
     </ClCompile>
+    <ClCompile Include="Polygon.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Circle.h">
@@ -52,6 +55,9 @@
     </ClInclude>
     <ClInclude Include="ModelLoader.h">
       <Filter>Import</Filter>
+    </ClInclude>
+    <ClInclude Include="Polygon.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

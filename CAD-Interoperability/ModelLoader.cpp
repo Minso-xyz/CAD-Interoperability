@@ -1,6 +1,7 @@
 #include <sstream>
 #include <fstream>
 #include "ModelLoader.h"
+#include "Polygon.h"
 #include <iostream>
 
 std::unique_ptr<Line> ModelLoader::ParseLine(const std::string& lineToParse)
@@ -43,6 +44,29 @@ std::unique_ptr<Circle> ModelLoader::ParseCircle(const std::string& circleToPars
     return circle;
 }
 
+std::unique_ptr<Polygon> ModelLoader::ParsePolygon(const std::string& polygonToParse)
+{
+    std::stringstream ss(polygonToParse);
+
+    std::string entityName;
+    int numOfVertices;
+
+    std::vector<Point2D> vertices;
+
+    ss >> entityName >> numOfVertices;
+    
+    for (int i = 0; i < numOfVertices; i++)
+    {
+        double x, y;
+        ss >> x >> y;
+        Point2D vertex{ x,y };
+        vertices.push_back(vertex);
+    }
+
+    std::unique_ptr<Polygon> polygon = std::make_unique<Polygon>("Polygon", vertices);
+    return polygon;
+}
+
 GeometryScene ModelLoader::LoadModel(const std::string& filePath)
 {
     GeometryScene scene;
@@ -65,6 +89,10 @@ GeometryScene ModelLoader::LoadModel(const std::string& filePath)
         else if (entityName == "CIRCLE")
         {
             geometry = ParseCircle(line);
+        }
+        else if (entityName == "POLYGON")
+        {
+            geometry = ParsePolygon(line);
         }
 
         /*switch (entityName) {

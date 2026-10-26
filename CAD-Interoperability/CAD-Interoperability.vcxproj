@@ -130,6 +130,7 @@
     <ClCompile Include="GeometryScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelLoader.cpp" />
+    <ClCompile Include="Polygon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Circle.h" />
@@ -138,6 +139,7 @@
     <ClInclude Include="Line.h" />
     <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="Point2D.h" />
+    <ClInclude Include="Polygon.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
