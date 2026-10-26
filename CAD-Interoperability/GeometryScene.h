@@ -2,7 +2,8 @@
 
 #include <memory>
 #include <vector>
-#include "Polygon.h"
+
+#include "Geometry.h"
 
 class GeometryScene
 {

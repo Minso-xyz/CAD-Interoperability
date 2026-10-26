@@ -1,4 +1,5 @@
 #include "GeometryScene.h"
+#include "Geometry.h"
 #include <iostream>
 
 void GeometryScene::AddGeometry(std::unique_ptr<Geometry> geometry)
