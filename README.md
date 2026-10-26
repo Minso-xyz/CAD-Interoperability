@@ -1,36 +1,23 @@
 # CAD Interoperability
 
-A C++ CAD interoperability project for extracting, representing, and translating structured CAD data.
+A C++ project for extracting, representing, and translating structured CAD data across different CAD systems and formats.
 
-## Goals
+## Current Implementation
 
-This project explores the architecture and implementation of CAD interoperability pipelines, including:
+- [x] Polymorphic C++ geometry model
+- [x] `std::unique_ptr`-based ownership
+- [x] Basic geometry import pipeline
+- [x] Line, Circle, and Polygon parsing
+- [x] NX Open C++ integration
+- [ ] NX assembly extraction
+- [ ] Geometry / topology inspection
+- [ ] Feature / parameter extraction
+- [ ] PMI / dimension / constraint extraction
 
-- CAD geometry and model representation
-- File parsing and structured data extraction
-- Polymorphic geometry and entity models in modern C++
-- Explicit object ownership and lifetime management
-- Translation between CAD representations
-- Validation of imported and converted data
+## Roadmap
 
-## Current Status
-
-Early development.
-
-The initial implementation focuses on building a typed geometry import pipeline with:
-
-- `Geometry` as a common base type
-- `Line` and `Circle` geometry entities
-- Polymorphic model storage
-- `std::unique_ptr`-based ownership
-- Basic text-based model parsing
-
-## Planned Directions
-
-- STEP entity parsing and reference resolution
-- Geometry and topology extraction
-- Parts and assemblies
-- Parameters and metadata
-- Dimensions, constraints, and PMI
-- CAD format translation and validation
-- Native CAD data extraction experiments
+- [ ] Structured NX model extraction
+- [ ] CAD-neutral intermediate representation
+- [ ] STEP / Parasolid comparison
+- [ ] NX / STEP data mapping
+- [ ] Import / translation validation
