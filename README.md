@@ -9,8 +9,8 @@ A C++ project for extracting, representing, and translating structured CAD data 
 - [x] Basic geometry import pipeline
 - [x] Line, Circle, and Polygon parsing
 - [x] NX Open C++ integration
-- [ ] NX assembly extraction
-- [ ] Geometry / topology inspection
+- [x] NX assembly extraction
+- [x] Geometry / topology inspection
 - [ ] Feature / parameter extraction
 - [ ] PMI / dimension / constraint extraction
 
