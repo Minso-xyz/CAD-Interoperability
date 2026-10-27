@@ -150,7 +150,7 @@ void NXExtractor::do_it()
 
 	NXOpen::NXString nameWorkPart = workPart->Name();
 	print("Work part found : " + nameWorkPart);
-
+	print("");
 
 	// Print the display name of assembly
 	Part* part = theSession->Parts()->Work();
@@ -232,9 +232,31 @@ void NXExtractor::PrintComponentTree(Assemblies::Component* component, int depth
 
 	std::string indent(depth * 2, ' ');  // to print the assembly hierarchy better
 
-	print(indent + component->DisplayName());
+	// Extract the position & orientation
+	NXOpen::Point3d position;
+	NXOpen::Matrix3x3 orientation;
+	component->GetPosition(&position, &orientation);
 
+	print(indent + component->DisplayName());  // display name
+	print(indent + " L Journal Identifier : " + component->JournalIdentifier());  // Journal Identifier
+
+	// position
+	print(indent + " L Position : (" 
+		+ std::to_string(position.X) + ","
+	+ std::to_string(position.Y) + ", "
+	+ std::to_string(position.Z) + ")");
+
+	// orientation
+	// to-do (after EulerAngles conversion)
+
+	// Children count
 	std::vector<Assemblies::Component*> children = component->GetChildren();
+	print(indent + " L Children Count : " + std::to_string(children.size()));
+
+	// Suppressed (boolean)
+	print(indent + " L Suppressed : " + std::to_string(component->IsSuppressed()));
+
+	print("");
 
 	for (Assemblies::Component* child : children)
 	{
