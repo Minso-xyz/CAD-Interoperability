@@ -16,6 +16,7 @@
 #include <NXOpen/Body.hxx>
 #include <NXOpen/BodyCollection.hxx>
 #include <NXOpen/Face.hxx>
+#include <NXOpen/Edge.hxx>
 #include <NXOpen/Line.hxx>
 #include <NXOpen/NXException.hxx>
 #include <NXOpen/NXObject.hxx>
@@ -176,10 +177,11 @@ void NXExtractor::do_it()
 	//	print("L " + child->DisplayName());
 	//}
 	
-	PrintComponentTree(root, 1);
+	//PrintComponentTree(root, 1);
+
+	PrintBRepTree(part);
 }
 
- 
 //------------------------------------------------------------------------------
 // Entry point(s) for unmanaged internal NXOpen C/C++ programs
 //------------------------------------------------------------------------------
@@ -275,16 +277,26 @@ void NXExtractor::PrintBRepTree(Part* part)
 		Body* body = *i;
 		bodyIndex++;
 
-		print("Body " + std::to_string(bodyIndex));
+		print("Body [" + std::to_string(bodyIndex) + "]");
 
 		std::vector<Face*> faces = body->GetFaces();
 
-		print("Faces: " + std::to_string(faces.size()));
+		print(" L Faces :" + std::to_string(faces.size()));
 
-		for (auto face : faces)
+		for (int i=0; i< faces.size();i++)
 		{
-			std::vector<Edge*> edges = face->GetEdges();
-			print("Edges: " + std::to_string(edges.size());
+			std::string faceType = std::to_string(faces[i]->SolidFaceType());
+			print("  L Face [" + std::to_string(i)+"]: " + faceType);
+
+			std::vector<Edge*> edges = faces[i]->GetEdges();
+			print("   L Edges : " + std::to_string(edges.size()));
+
+			for (int j = 0; j < edges.size(); j++)
+			{
+				std::string edgeType = std::to_string(edges[j]->SolidEdgeType());
+				print("  L Edge [" + std::to_string(j) + "]: " + edgeType);
+			}
 		}
 	}
 }
+
