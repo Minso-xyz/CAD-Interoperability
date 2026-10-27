@@ -58,6 +58,7 @@ public:
 	void print(const char*);
 
 	void PrintComponentTree(Assemblies::Component* component, int depth);
+	void PrintBRepTree(Part* part);
   
 
 private:
@@ -261,5 +262,29 @@ void NXExtractor::PrintComponentTree(Assemblies::Component* component, int depth
 	for (Assemblies::Component* child : children)
 	{
 		PrintComponentTree(child, depth + 1);
+	}
+}
+
+void NXExtractor::PrintBRepTree(Part* part)
+{
+	BodyCollection* bodies = part->Bodies();
+	int bodyIndex = 0;
+
+	for (BodyCollection::iterator i = bodies->begin(); i != bodies->end(); ++i)
+	{
+		Body* body = *i;
+		bodyIndex++;
+
+		print("Body " + std::to_string(bodyIndex));
+
+		std::vector<Face*> faces = body->GetFaces();
+
+		print("Faces: " + std::to_string(faces.size()));
+
+		for (auto face : faces)
+		{
+			std::vector<Edge*> edges = face->GetEdges();
+			print("Edges: " + std::to_string(edges.size());
+		}
 	}
 }
