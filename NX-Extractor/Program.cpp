@@ -61,6 +61,7 @@ public:
 	void PrintComponentTree(Assemblies::Component* component, int depth);
 	void PrintBRepTree(Part* part);
 	std::string FaceTypeToString(Face::FaceType faceType);
+	std::string EdgeTypeToString(Edge::EdgeType edgeType);
   
 
 private:
@@ -294,7 +295,7 @@ void NXExtractor::PrintBRepTree(Part* part)
 
 			for (int j = 0; j < edges.size(); j++)
 			{
-				std::string edgeType = std::to_string(edges[j]->SolidEdgeType());
+				std::string edgeType = EdgeTypeToString(edges[j]->SolidEdgeType());
 				print("    L Edge [" + std::to_string(j) + "]: " + edgeType);
 			}
 		}
@@ -340,3 +341,44 @@ std::string NXExtractor::FaceTypeToString(Face::FaceType faceType)
 	}
 }
 
+std::string NXExtractor::EdgeTypeToString(Edge::EdgeType edgeType)
+{
+	switch (edgeType)
+	{
+	case Edge::EdgeTypeLinear:
+		return "Line";
+
+	case Edge::EdgeTypeCircular:
+		return "Circle";
+
+	case Edge::EdgeTypeElliptical:
+		return "Ellipse";
+
+	case Edge::EdgeTypeSpline:
+		return "Spline";
+
+	case Edge::EdgeTypeIntersection:
+		return "Intersection Curve";
+
+	case Edge::EdgeTypeSpCurve:
+		return "SP Curve";
+
+	case Edge::EdgeTypeTrimmedCurve:
+		return "Trimmed Curve";
+
+	case Edge::EdgeTypeConvergent:
+		return "Convergent";
+
+	case Edge::EdgeTypeForeign:
+		return "Foreign";
+
+	case Edge::EdgeTypeConstantParameter:
+		return "Constant Parameter";
+
+	case Edge::EdgeTypeRubber:
+		return "Rubber";
+
+	default:
+		return "Undefined";
+	}
+}
