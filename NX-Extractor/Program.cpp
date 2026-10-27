@@ -60,6 +60,7 @@ public:
 
 	void PrintComponentTree(Assemblies::Component* component, int depth);
 	void PrintBRepTree(Part* part);
+	std::string FaceTypeToString(Face::FaceType faceType);
   
 
 private:
@@ -285,7 +286,7 @@ void NXExtractor::PrintBRepTree(Part* part)
 
 		for (int i=0; i< faces.size();i++)
 		{
-			std::string faceType = std::to_string(faces[i]->SolidFaceType());
+			std::string faceType = FaceTypeToString(faces[i]->SolidFaceType());
 			print("  L Face [" + std::to_string(i)+"]: " + faceType);
 
 			std::vector<Edge*> edges = faces[i]->GetEdges();
@@ -294,9 +295,48 @@ void NXExtractor::PrintBRepTree(Part* part)
 			for (int j = 0; j < edges.size(); j++)
 			{
 				std::string edgeType = std::to_string(edges[j]->SolidEdgeType());
-				print("  L Edge [" + std::to_string(j) + "]: " + edgeType);
+				print("    L Edge [" + std::to_string(j) + "]: " + edgeType);
 			}
 		}
+	}
+}
+
+std::string NXExtractor::FaceTypeToString(Face::FaceType faceType)
+{
+	switch (faceType)
+	{
+	case Face::FaceTypePlanar:
+		return "Plane";
+
+	case Face::FaceTypeCylindrical:
+		return "Cylinder";
+
+	case Face::FaceTypeConical:
+		return "Cone";
+
+	case Face::FaceTypeSpherical:
+		return "Sphere";
+
+	case Face::FaceTypeSurfaceOfRevolution:
+		return "Surface of Revolution";
+
+	case Face::FaceTypeParametric:
+		return "Parametric Surface";
+
+	case Face::FaceTypeBlending:
+		return "Blend";
+
+	case Face::FaceTypeOffset:
+		return "Offset Surface";
+
+	case Face::FaceTypeSwept:
+		return "Swept Surface";
+
+	case Face::FaceTypeRubber:
+		return "Rubber";
+
+	default:
+		return "Undefined";
 	}
 }
 
