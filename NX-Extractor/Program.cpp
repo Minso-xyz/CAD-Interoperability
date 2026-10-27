@@ -17,6 +17,7 @@
 #include <NXOpen/BodyCollection.hxx>
 #include <NXOpen/Face.hxx>
 #include <NXOpen/Edge.hxx>
+#include <NXOpen/Features_BodyFeature.hxx>
 #include <NXOpen/Line.hxx>
 #include <NXOpen/NXException.hxx>
 #include <NXOpen/NXObject.hxx>
@@ -60,6 +61,7 @@ public:
 
 	void PrintComponentTree(Assemblies::Component* component, int depth);
 	void PrintBRepTree(Part* part);
+	void PrintFeatureTree(Part* part);
 	std::string FaceTypeToString(Face::FaceType faceType);
 	std::string EdgeTypeToString(Edge::EdgeType edgeType);
   
@@ -179,9 +181,14 @@ void NXExtractor::do_it()
 	//	print("L " + child->DisplayName());
 	//}
 	
+
+
+
 	//PrintComponentTree(root, 1);
 
-	PrintBRepTree(part);
+	//PrintBRepTree(part);
+
+	PrintFeatureTree(part);
 }
 
 //------------------------------------------------------------------------------
@@ -299,6 +306,31 @@ void NXExtractor::PrintBRepTree(Part* part)
 				print("    L Edge [" + std::to_string(j) + "]: " + edgeType);
 			}
 		}
+	}
+}
+
+void NXExtractor::PrintFeatureTree(Part* part)
+{
+	BodyCollection* bodies = part->Bodies();
+	int bodyIndex = 0;
+
+	for (BodyCollection::iterator i = bodies->begin(); i != bodies->end(); ++i)
+	{
+		Body* body = *i;
+		bodyIndex++;
+
+		print("Body [" + std::to_string(bodyIndex) + "]");
+
+		std::vector<NXOpen::Features::Feature*> features = body->GetFeatures();
+
+		print(" L Features :" + std::to_string(features.size()));
+
+		for (int i = 0; i < features.size(); i++)
+		{
+			NXOpen::NXString featureType = features[i]->FeatureType();
+			print("  L Features [" + std::to_string(i) + "]: " + featureType);
+		}
+
 	}
 }
 
