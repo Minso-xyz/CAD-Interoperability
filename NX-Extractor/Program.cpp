@@ -56,6 +56,8 @@ public:
 	void print(const NXString &);
 	void print(const string &);
 	void print(const char*);
+
+	void PrintComponentTree(Assemblies::Component* component, int depth);
   
 
 private:
@@ -156,22 +158,24 @@ void NXExtractor::do_it()
 	Assemblies::ComponentAssembly* componentAssembly = part->ComponentAssembly();
 	Assemblies::Component* root = componentAssembly->RootComponent();
 
-	if (root == nullptr)
-	{
-		print("Work part is not an assembly!");
-		return;
-	}
+	//if (root == nullptr)
+	//{
+	//	print("Work part is not an assembly!");
+	//	return;
+	//}
 
-	NXOpen::NXString nameRoot = root->DisplayName();
-	print("Assembly root found : " + nameRoot);
+	//NXOpen::NXString nameRoot = root->DisplayName();
+	//print("Assembly root found : " + nameRoot);
 
-	// Root extraction
-	print("=== List of children ===");
-	std::vector<Assemblies::Component*> rootChildren = root->GetChildren();
-	for (auto child : rootChildren)
-	{
-		print("L " + child->DisplayName());
-	}
+	//// Root extraction
+	//print("=== List of children ===");
+	//std::vector<Assemblies::Component*> rootChildren = root->GetChildren();
+	//for (auto child : rootChildren)
+	//{
+	//	print("L " + child->DisplayName());
+	//}
+	
+	PrintComponentTree(root, 1);
 }
 
  
@@ -214,3 +218,26 @@ extern "C" DllExport int ufusr_ask_unload()
   
 }
 
+
+//------------------------------------------------------------------------------
+// Custom Functions
+//------------------------------------------------------------------------------
+
+void NXExtractor::PrintComponentTree(Assemblies::Component* component, int depth)
+{
+	if (component == nullptr)
+	{
+		return;
+	}
+
+	std::string indent(depth * 2, ' ');  // to print the assembly hierarchy better
+
+	print(indent + component->DisplayName());
+
+	std::vector<Assemblies::Component*> children = component->GetChildren();
+
+	for (Assemblies::Component* child : children)
+	{
+		PrintComponentTree(child, depth + 1);
+	}
+}
