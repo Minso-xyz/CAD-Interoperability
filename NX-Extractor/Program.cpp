@@ -62,6 +62,7 @@ public:
 	void PrintComponentTree(Assemblies::Component* component, int depth);
 	void PrintBRepTree(Part* part);
 	void PrintFeatureTree(Part* part);
+	void PrintFeatureExpressions(Part* part);
 	std::string FaceTypeToString(Face::FaceType faceType);
 	std::string EdgeTypeToString(Edge::EdgeType edgeType);
   
@@ -188,7 +189,9 @@ void NXExtractor::do_it()
 
 	//PrintBRepTree(part);
 
-	PrintFeatureTree(part);
+	//PrintFeatureTree(part);
+
+	PrintFeatureExpressions(part);
 }
 
 //------------------------------------------------------------------------------
@@ -328,9 +331,48 @@ void NXExtractor::PrintFeatureTree(Part* part)
 		for (int i = 0; i < features.size(); i++)
 		{
 			NXOpen::NXString featureType = features[i]->FeatureType();
-			print("  L Features [" + std::to_string(i) + "]: " + featureType);
+			NXOpen::NXString featureName = features[i]->GetFeatureName();
+			print("  L Feature [" + std::to_string(i) + "]");
+			print("    Type : " + featureType);
+			print("    Name : " + featureName);
 		}
+	}
+}
 
+void NXExtractor::PrintFeatureExpressions(Part* part)
+{
+	print("=== NX Expression ===");
+
+	BodyCollection* bodies = part->Bodies();
+	int bodyIndex = 0;
+
+	for (BodyCollection::iterator i = bodies->begin(); i != bodies->end(); ++i)
+	{
+		Body* body = *i;
+		bodyIndex++;
+
+		std::vector<NXOpen::Features::Feature*> features = body->GetFeatures();
+
+		for (int i = 0; i < features.size(); i++)
+		{
+			std::vector<Expression*> expressions = features[i]->GetExpressions();
+
+			NXOpen::NXString featureType = features[i]->FeatureType();
+			print("Feature [" + std::to_string(i) + "] : " + featureType);
+
+			for (int j = 0; j < expressions.size(); j++)
+			{
+				NXOpen::NXString name = expressions[j]->Name();
+				NXOpen::NXString formula = expressions[j]->GetFormula();
+				double value = expressions[j]->Value();
+
+				print(" Expression [" + std::to_string(j) + "]");
+				print("  L Name : " + name);
+				print("  L Formula : " + formula);
+				print("  L Value : " + std::to_string(value));
+				print("");
+			}
+		}
 	}
 }
 
