@@ -12,6 +12,9 @@
 // Internal+External Includes
 #include <NXOpen/Annotations.hxx>
 #include <NXOpen/Annotations_Dimension.hxx>
+#include <NXOpen/Annotations_AngularDimension.hxx>
+#include <NXOpen/Annotations_DiameterDimension.hxx>
+#include <NXOpen/Annotations_CylindricalDimension.hxx>
 #include <NXOpen/Annotations_DimensionCollection.hxx>
 #include <NXOpen/Assemblies_Component.hxx>
 #include <NXOpen/Assemblies_ComponentAssembly.hxx>
@@ -66,6 +69,7 @@ public:
 	void PrintFeatureTree(Part* part);
 	void PrintFeatureExpressions(Part* part);
 	void PrintDimensions(Part* part);
+	std::string GetDimensionTypeName(NXOpen::Annotations::Dimension* dimension);
 	std::string FaceTypeToString(Face::FaceType faceType);
 	std::string EdgeTypeToString(Edge::EdgeType edgeType);
   
@@ -389,28 +393,51 @@ void NXExtractor::PrintDimensions(Part* part)
 		NXOpen::Annotations::Dimension* dimension = *iter;
 		dimIndex++;
 
+		// name
+		NXOpen::NXString name = dimension->Name();
+
 		// value
-		double value = dimension->ComputedSize();
+		double value = dimension->ComputedSize();  // numerical/semantic data
 
 		// text
 		std::vector<NXOpen::NXString> mainText;
 		std::vector<NXOpen::NXString> dualText;
-		dimension->GetDimensionText(mainText, dualText);
+		dimension->GetDimensionText(mainText, dualText);  // display/presentation data
+		std::string displayText = "";
+		if (!mainText.empty()) displayText= mainText[0].GetText();
 
-		// measurement type
-		NXOpen::Annotations::Dimension::MeasurementTypes dimType = dimension->GetMeasurementType();
+		// associated object
+		NXOpen::NXString objFirstName = "";
+		NXOpen::Annotations::Associativity* objFirst = dimension->GetFirstAssociativity();
+		if (objFirst != nullptr && objFirst->FirstObject() != nullptr)
+		{
+			objFirstName = objFirst->FirstObject()->Name();
+		}
+		
+		// tolerance
+		double tol_upper = dimension->UpperMetricToleranceValue();
+		double tol_lower = dimension->LowerMetricToleranceValue();
 
-		// Associated object
-		std::vector<NXOpen::NXObject*> obj = dimension->GetUserAttributeSourceObjects();
+		// inspection
+		bool inspection = dimension->InspectionDimensionFlag();
+
+		// reference
+		bool reference = dimension->ReferenceDimensionFlag();
 
 		print("Dimension [" + std::to_string(dimIndex) + "]");
+		print(" L Name : " + name);
 		print(" L Value : " + std::to_string(value));
-		print(" L Text : " + mainText[0]);
-		print(" L Type : " + std::to_string(dimType));
+		print(" L Text : " + displayText);
+		print(" L Tolerance : +" + std::to_string(tol_upper) + "/ " + std::to_string(tol_lower));
+		print(" L Inspection : " + std::to_string(inspection));
+		print(" L Reference : " + std::to_string(reference));
+		print(" L Object Name : " + objFirstName);
+		print("");
 	}
 
 	print("Total Dimensions : " + std::to_string(dimIndex));
 }
+
 
 std::string NXExtractor::FaceTypeToString(Face::FaceType faceType)
 {
