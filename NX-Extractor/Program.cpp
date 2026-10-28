@@ -11,6 +11,8 @@
  
 // Internal+External Includes
 #include <NXOpen/Annotations.hxx>
+#include <NXOpen/Annotations_Dimension.hxx>
+#include <NXOpen/Annotations_DimensionCollection.hxx>
 #include <NXOpen/Assemblies_Component.hxx>
 #include <NXOpen/Assemblies_ComponentAssembly.hxx>
 #include <NXOpen/Body.hxx>
@@ -63,6 +65,7 @@ public:
 	void PrintBRepTree(Part* part);
 	void PrintFeatureTree(Part* part);
 	void PrintFeatureExpressions(Part* part);
+	void PrintDimensions(Part* part);
 	std::string FaceTypeToString(Face::FaceType faceType);
 	std::string EdgeTypeToString(Edge::EdgeType edgeType);
   
@@ -191,7 +194,9 @@ void NXExtractor::do_it()
 
 	//PrintFeatureTree(part);
 
-	PrintFeatureExpressions(part);
+	//PrintFeatureExpressions(part);
+
+	PrintDimensions(part);
 }
 
 //------------------------------------------------------------------------------
@@ -284,9 +289,9 @@ void NXExtractor::PrintBRepTree(Part* part)
 	BodyCollection* bodies = part->Bodies();
 	int bodyIndex = 0;
 
-	for (BodyCollection::iterator i = bodies->begin(); i != bodies->end(); ++i)
+	for (BodyCollection::iterator iter = bodies->begin(); iter != bodies->end(); ++iter)
 	{
-		Body* body = *i;
+		Body* body = *iter;
 		bodyIndex++;
 
 		print("Body [" + std::to_string(bodyIndex) + "]");
@@ -317,9 +322,9 @@ void NXExtractor::PrintFeatureTree(Part* part)
 	BodyCollection* bodies = part->Bodies();
 	int bodyIndex = 0;
 
-	for (BodyCollection::iterator i = bodies->begin(); i != bodies->end(); ++i)
+	for (BodyCollection::iterator iter = bodies->begin(); iter != bodies->end(); ++iter)
 	{
-		Body* body = *i;
+		Body* body = *iter;
 		bodyIndex++;
 
 		print("Body [" + std::to_string(bodyIndex) + "]");
@@ -344,12 +349,10 @@ void NXExtractor::PrintFeatureExpressions(Part* part)
 	print("=== NX Expression ===");
 
 	BodyCollection* bodies = part->Bodies();
-	int bodyIndex = 0;
 
-	for (BodyCollection::iterator i = bodies->begin(); i != bodies->end(); ++i)
+	for (BodyCollection::iterator iter = bodies->begin(); iter != bodies->end(); ++iter)
 	{
-		Body* body = *i;
-		bodyIndex++;
+		Body* body = *iter;
 
 		std::vector<NXOpen::Features::Feature*> features = body->GetFeatures();
 
@@ -374,6 +377,39 @@ void NXExtractor::PrintFeatureExpressions(Part* part)
 			}
 		}
 	}
+}
+
+void NXExtractor::PrintDimensions(Part* part)
+{
+	NXOpen::Annotations::DimensionCollection* dimensions = part->Dimensions();
+	int dimIndex = 0;
+
+	for (NXOpen::Annotations::DimensionCollection::iterator iter = dimensions->begin(); iter != dimensions->end(); ++iter)
+	{
+		NXOpen::Annotations::Dimension* dimension = *iter;
+		dimIndex++;
+
+		// value
+		double value = dimension->ComputedSize();
+
+		// text
+		std::vector<NXOpen::NXString> mainText;
+		std::vector<NXOpen::NXString> dualText;
+		dimension->GetDimensionText(mainText, dualText);
+
+		// measurement type
+		NXOpen::Annotations::Dimension::MeasurementTypes dimType = dimension->GetMeasurementType();
+
+		// Associated object
+		std::vector<NXOpen::NXObject*> obj = dimension->GetUserAttributeSourceObjects();
+
+		print("Dimension [" + std::to_string(dimIndex) + "]");
+		print(" L Value : " + std::to_string(value));
+		print(" L Text : " + mainText[0]);
+		print(" L Type : " + std::to_string(dimType));
+	}
+
+	print("Total Dimensions : " + std::to_string(dimIndex));
 }
 
 std::string NXExtractor::FaceTypeToString(Face::FaceType faceType)
