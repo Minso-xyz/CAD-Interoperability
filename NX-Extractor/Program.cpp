@@ -16,6 +16,9 @@
 #include <NXOpen/Annotations_DiameterDimension.hxx>
 #include <NXOpen/Annotations_CylindricalDimension.hxx>
 #include <NXOpen/Annotations_DimensionCollection.hxx>
+#include <NXOpen/Annotations_PmiManager.hxx>
+#include <NXOpen/Annotations_PmiCollection.hxx>
+#include <NXOpen/Annotations_Pmi.hxx>
 #include <NXOpen/Assemblies_Component.hxx>
 #include <NXOpen/Assemblies_ComponentAssembly.hxx>
 #include <NXOpen/Body.hxx>
@@ -69,9 +72,11 @@ public:
 	void PrintFeatureTree(Part* part);
 	void PrintFeatureExpressions(Part* part);
 	void PrintDimensions(Part* part);
+	void PrintPMIData(Part* part);
 	std::string GetDimensionTypeName(NXOpen::Annotations::Dimension* dimension);
 	std::string FaceTypeToString(Face::FaceType faceType);
 	std::string EdgeTypeToString(Edge::EdgeType edgeType);
+	std::string PMITypeToString(NXOpen::Annotations::Pmi::PmiType);
   
 
 private:
@@ -431,13 +436,99 @@ void NXExtractor::PrintDimensions(Part* part)
 		print(" L Tolerance : +" + std::to_string(tol_upper) + "/ " + std::to_string(tol_lower));
 		print(" L Inspection : " + std::to_string(inspection));
 		print(" L Reference : " + std::to_string(reference));
-		print(" L Object Name : " + objFirstName);
+		print(" L Associated Object : " + objFirstName);
 		print("");
 	}
 
 	print("Total Dimensions : " + std::to_string(dimIndex));
 }
 
+std::string NXExtractor::PMITypeToString(
+	NXOpen::Annotations::Pmi::PmiType pmiType)
+{
+	using Pmi = NXOpen::Annotations::Pmi;
+
+	switch (pmiType)
+	{
+	case Pmi::PmiTypeNone:
+		return "None";
+
+	case Pmi::PmiTypeBalloonNote:
+		return "Balloon Note";
+
+	case Pmi::PmiTypeBalloonIdSymbol:
+		return "Balloon ID Symbol";
+
+	case Pmi::PmiTypeCenterline:
+		return "Centerline";
+
+	case Pmi::PmiTypeCoordinateNote:
+		return "Coordinate Note";
+
+	case Pmi::PmiTypeCustomSymbol:
+		return "Custom Symbol";
+
+	case Pmi::PmiTypeCuttingPlaneSymbol:
+		return "Cutting Plane Symbol";
+
+	case Pmi::PmiTypeDatum:
+		return "Datum";
+
+	case Pmi::PmiTypeDatumTarget:
+		return "Datum Target";
+
+	case Pmi::PmiTypeDimension:
+		return "Dimension";
+
+	case Pmi::PmiTypeEdgeCondition:
+		return "Edge Condition";
+
+	case Pmi::PmiTypeEnterpriseIdentification:
+		return "Enterprise Identification";
+
+	case Pmi::PmiTypeExportControl:
+		return "Export Control";
+
+	case Pmi::PmiTypeFeatureControlFrame:
+		return "Feature Control Frame";
+
+	case Pmi::PmiTypeGovernmentSecurityInformation:
+		return "Government Security Information";
+
+	case Pmi::PmiTypeLineWeld:
+		return "Line Weld";
+
+	case Pmi::PmiTypeLocatorDesignator:
+		return "Locator Designator";
+
+	case Pmi::PmiTypeMaterialSpecification:
+		return "Material Specification";
+
+	case Pmi::PmiTypeNote:
+		return "Note";
+
+	case Pmi::PmiTypePartIdentification:
+		return "Part Identification";
+
+	case Pmi::PmiTypeProcessSpecification:
+		return "Process Specification";
+
+	case Pmi::PmiTypeProprietaryInformation:
+		return "Proprietary Information";
+
+	case Pmi::PmiTypeRegion:
+		return "Region";
+
+	case Pmi::PmiTypeSurfaceFinish:
+		return "Surface Finish";
+
+	case Pmi::PmiTypeTable:
+		return "Table";
+
+	default:
+		return "Unknown PMI Type";
+	}
+}
 
 std::string NXExtractor::FaceTypeToString(Face::FaceType faceType)
 {
