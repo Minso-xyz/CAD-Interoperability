@@ -205,7 +205,9 @@ void NXExtractor::do_it()
 
 	//PrintFeatureExpressions(part);
 
-	PrintDimensions(part);
+	//PrintDimensions(part);
+
+	PrintPMIData(part);
 }
 
 //------------------------------------------------------------------------------
@@ -441,6 +443,43 @@ void NXExtractor::PrintDimensions(Part* part)
 	}
 
 	print("Total Dimensions : " + std::to_string(dimIndex));
+}
+
+void NXExtractor::PrintPMIData(Part* part)
+{
+	NXOpen::Annotations::PmiManager* pmiManager = part->PmiManager();
+	NXOpen::Annotations::PmiCollection* pmis = pmiManager->Pmis();
+
+	int pmiIndex = 0;
+
+	for (NXOpen::Annotations::PmiCollection::iterator iter = pmis->begin(); iter != pmis->end(); ++iter)
+	{
+		NXOpen::Annotations::Pmi* pmi = *iter;
+		pmiIndex++;
+
+		NXOpen::NXString name = pmi->Name();  // name
+		NXOpen::Annotations::Pmi::PmiType type = pmi->Type();  // type
+		int index = pmi->Index();  // index
+		
+		std::vector<NXOpen::Annotations::Annotation*> displayInstances = pmi->GetDisplayInstances();   // display instances
+		int displayInstancesNum = displayInstances.size();
+
+		std::vector<NXOpen::Annotations::BusinessModifier*> businessModifiers = pmi->GetBusinessModifiers();  // business modifieers
+		int businessModifiersNum = businessModifiers.size();
+		//NXOpen::Annotations::AssociatedObject* objAsso = pmi->GetAssociatedObject();
+		
+		print("PMI [" + std::to_string(pmiIndex) + "]");
+		print(" L Name : " + name);
+		print(" L Type : " + PMITypeToString(type));
+		print(" L Index : " + std::to_string(index));
+		print(" L Display Instances :" + std::to_string(displayInstancesNum));
+		print(" L Mirrored : " + std::to_string(pmi->IsMirrored()));
+		print(" L Business Modifiers : " + std::to_string(businessModifiersNum));
+		//print(" L Associated Object : " + objAsso);
+		print("");
+	}
+
+	print("Total PMI : " + std::to_string(pmiIndex));
 }
 
 std::string NXExtractor::PMITypeToString(
