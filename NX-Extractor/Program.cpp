@@ -73,10 +73,13 @@ public:
 	void PrintFeatureExpressions(Part* part);
 	void PrintDimensions(Part* part);
 	void PrintPMIData(Part* part);
+	void ExtractPMIData(NXOpen::Annotations::Pmi::PmiType pmiType, NXOpen::Annotations::Pmi* pmi);
 	std::string GetDimensionTypeName(NXOpen::Annotations::Dimension* dimension);
 	std::string FaceTypeToString(Face::FaceType faceType);
 	std::string EdgeTypeToString(Edge::EdgeType edgeType);
 	std::string PMITypeToString(NXOpen::Annotations::Pmi::PmiType);
+
+	void PrintPmiSurfaceFinishData(NXOpen::Annotations::Pmi* pmi);
   
 
 private:
@@ -445,6 +448,7 @@ void NXExtractor::PrintDimensions(Part* part)
 	print("Total Dimensions : " + std::to_string(dimIndex));
 }
 
+
 void NXExtractor::PrintPMIData(Part* part)
 {
 	NXOpen::Annotations::PmiManager* pmiManager = part->PmiManager();
@@ -476,14 +480,81 @@ void NXExtractor::PrintPMIData(Part* part)
 		print(" L Mirrored : " + std::to_string(pmi->IsMirrored()));
 		print(" L Business Modifiers : " + std::to_string(businessModifiersNum));
 		//print(" L Associated Object : " + objAsso);
+
+		// Extract PMI data
+		ExtractPMIData(type, pmi);
 		print("");
 	}
-
 	print("Total PMI : " + std::to_string(pmiIndex));
 }
 
-std::string NXExtractor::PMITypeToString(
-	NXOpen::Annotations::Pmi::PmiType pmiType)
+// License requirements : geometric_tol (GDT)
+// Semantic data extraction
+void NXExtractor::ExtractPMIData(NXOpen::Annotations::Pmi::PmiType pmiType, NXOpen::Annotations::Pmi* pmi)
+{
+	using NXOpen::Annotations::Pmi;
+
+	switch (pmiType)
+	{
+	case Pmi::PmiTypeDimension:
+		// refer to PrintDimensions(part);
+		// PrintDiemsionData(pmi);
+		break;
+	case Pmi::PmiTypeDatum:
+		// PrintPmiDatumData();
+		break;
+
+	case Pmi::PmiTypeFeatureControlFrame:
+		// PrintFcfData();  feature control frame
+		break;
+		
+	case Pmi::PmiTypeSurfaceFinish:
+		// PrintPmiSurfaceFinishData(pmi);
+		break;
+
+	case Pmi::PmiTypeNote:
+		// PrintPmiNoteData();
+		break;
+	}
+}
+
+void NXExtractor::PrintPmiSurfaceFinishData(NXOpen::Annotations::Pmi* pmi)
+{
+	print("  Enter Surface Finish extraction");
+
+	try
+	{
+		using NXOpen::Annotations::Pmi;
+		NXOpen::Annotations::PmiSurfaceFinishData* pmiSurf = pmi->GetSurfaceFinishData();
+
+		if (pmiSurf == nullptr)
+		{
+			print("  No Surface Finish semantic data.");
+			return;
+		}
+
+		print("  Surface Finish semantic data retrieved");
+
+		print("Title : " + pmiSurf->Title());
+		print("Standard : " + pmiSurf->Standard());
+
+		NXOpen::NXString a1 = pmiSurf->A1String();
+		NXOpen::NXString a2 = pmiSurf->A2String();
+		NXOpen::NXString b = pmiSurf->BString();
+		NXOpen::NXString c = pmiSurf->CString();
+		NXOpen::NXString d = pmiSurf->DString();
+		NXOpen::NXString e = pmiSurf->EString();
+		NXOpen::NXString f1 = pmiSurf->F1String();
+		NXOpen::NXString f2 = pmiSurf->F2String();
+	}
+	catch (const NXOpen::NXException& e)
+	{
+		print("  Semantic extraction failed!" + e.ErrorCode());
+		return;
+	}
+}
+
+std::string NXExtractor::PMITypeToString(NXOpen::Annotations::Pmi::PmiType pmiType)
 {
 	using Pmi = NXOpen::Annotations::Pmi;
 
