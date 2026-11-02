@@ -470,7 +470,8 @@ void NXExtractor::PrintPMIData(Part* part)
 
 		std::vector<NXOpen::Annotations::BusinessModifier*> businessModifiers = pmi->GetBusinessModifiers();  // business modifieers
 		int businessModifiersNum = businessModifiers.size();
-		//NXOpen::Annotations::AssociatedObject* objAsso = pmi->GetAssociatedObject();
+		NXOpen::Annotations::AssociatedObject* objAsso = pmi->GetAssociatedObject();
+		
 		
 		print("PMI [" + std::to_string(pmiIndex) + "]");
 		print(" L Name : " + name);
@@ -479,10 +480,26 @@ void NXExtractor::PrintPMIData(Part* part)
 		print(" L Display Instances :" + std::to_string(displayInstancesNum));
 		print(" L Mirrored : " + std::to_string(pmi->IsMirrored()));
 		print(" L Business Modifiers : " + std::to_string(businessModifiersNum));
-		//print(" L Associated Object : " + objAsso);
 
-		// Extract PMI data
-		ExtractPMIData(type, pmi);
+		if (objAsso != nullptr)
+		{
+			std::vector<NXOpen::NXObject*> objects = objAsso->GetObjects();
+
+			for (int i = 0; i < objects.size(); ++i)
+			{
+				NXOpen::NXObject* object = objects[i];
+
+				if (object != nullptr)
+				{
+					print(
+						" L Associated Object [" + std::to_string(i + 1) +"] : " + object->Name()
+					);
+				}
+			}
+		}
+
+		//// Extract PMI data
+		//ExtractPMIData(type, pmi);
 		print("");
 	}
 	print("Total PMI : " + std::to_string(pmiIndex));
